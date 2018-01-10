@@ -3,9 +3,7 @@ package com.liilab.textimage;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,9 +12,9 @@ import com.liilab.textimage.views.ImageEditText;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageEditText mImageEditText;
-    ImageView imageView;
-    Bitmap mBitmap;
+    private ImageEditText mImageEditText;
+    private ImageView imageView;
+    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +29,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickCopy(View view) {
+        /* Remove Underline from incorrect words */
         mImageEditText.setInputType(
                 InputType.TYPE_CLASS_TEXT
                         | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                         | InputType.TYPE_TEXT_FLAG_MULTI_LINE
         );
+        /* Hide Cursor */
+        mImageEditText.setCursorVisible(false);
+
+        /* Get bitmap from EditText */
         mBitmap = Bitmap.createBitmap(mImageEditText.getDrawingCache());
         imageView.setImageBitmap(mBitmap);
+
+        /* Destroy current Drawing Cache */
         mImageEditText.destroyDrawingCache();
+        /* Bring back Underline of incorrect words */
         mImageEditText.setInputType(
                 InputType.TYPE_CLASS_TEXT
                         | InputType.TYPE_TEXT_FLAG_MULTI_LINE
         );
+        /* Bring back Cursor */
+        mImageEditText.setCursorVisible(true);
     }
 
     @Override
