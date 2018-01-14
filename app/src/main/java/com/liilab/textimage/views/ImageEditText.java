@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.appsngames.textimage.R;
@@ -41,7 +42,7 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
     // -------------------------------------------------------------------------------------------------
 
     private MultiTouchController.PointInfo currTouchPoint = new MultiTouchController.PointInfo();
-    private boolean mShowDebugInfo = false;
+    private boolean mShowDebugInfo = true;
     private static final int UI_MODE_ROTATE = 1, UI_MODE_ANISOTROPIC_SCALE = 2;
     private int mUIMode = UI_MODE_ROTATE;
 
@@ -55,16 +56,16 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
     private Bitmap comboBitmap;
     private Context context;
 
-    private Bitmap sealBitmap;
+//    private Bitmap sealBitmap;
 
     // ---------------------------------------------------------------------------------------------------
 
     private int screenWidth;
     private int screenHeight;
+    private int[] location = new int[2];
     private Rect frameToDraw;
     private RectF whereToDraw;
-    private int width;
-    private int height;
+
     private float wRatio;
     private float hRatio;
     private float ratioMultiplier;
@@ -89,9 +90,14 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
         init(context);
     }
 
+    public void addImg(Resources res, Bitmap bitmap) {
+        Img img = new Img(res, bitmap);
+        mImages.add(img);
+    }
 
     private void init(Context context) {
         this.context = context;
+        getLocationOnScreen(location);
         mLinePaintTouchPointCircle.setColor(Color.YELLOW);
         mLinePaintTouchPointCircle.setStrokeWidth(5);
         mLinePaintTouchPointCircle.setStyle(Paint.Style.STROKE);
@@ -105,8 +111,8 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
         if(comboBitmap != null) comboBitmap.recycle();
         comboBitmap = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888);
         comboCanvas = new Canvas(comboBitmap);
-        if(sealBitmap != null) sealBitmap.recycle();
-        sealBitmap = BitmapFactory.decodeResource(((Activity) getContext()).getResources(), R.drawable.seal);
+//        if(sealBitmap != null) sealBitmap.recycle();
+//        sealBitmap = BitmapFactory.decodeResource(((Activity) getContext()).getResources(), R.drawable.seal);
     }
 
     // -------------------------------------------------------------------------------------------------------
@@ -114,6 +120,7 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
 
     /** Called by activity's onResume() method to load the images */
     public void loadImages(Context context) {
+        getLocationOnScreen(location);
         Resources res = context.getResources();
         int n = mImages.size();
         for (int i = 0; i < n; i++)
@@ -133,29 +140,29 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        screenWidth = canvas.getWidth();
-        screenHeight = canvas.getHeight();
-        width = 100;//CommonStaticClass.getInstance().getmSuit().getWidth();
-        height = 100;//CommonStaticClass.getInstance().getmSuit().getHeight();
+//        screenWidth = canvas.getWidth();
+//        screenHeight = canvas.getHeight();
+//        width = 100;//CommonStaticClass.getInstance().getmSuit().getWidth();
+//        height = 100;//CommonStaticClass.getInstance().getmSuit().getHeight();
+//
+//        wRatio = (float)screenWidth / (float)width;
+//        hRatio = (float)screenHeight / (float)height;
 
-        wRatio = (float)screenWidth / (float)width;
-        hRatio = (float)screenHeight / (float)height;
+//        ratioMultiplier = wRatio;
 
-        ratioMultiplier = wRatio;
-
-        if (hRatio < wRatio) {
-            ratioMultiplier = hRatio;
-        }
+//        if (hRatio < wRatio) {
+//            ratioMultiplier = hRatio;
+//        }
 
         int n = mImages.size();
         for (int i = 0; i < n; i++) {
             mImages.get(i).draw(canvas);
         }
 
-        frameToDraw = new Rect(0, 0, width, height);
-        whereToDraw = new RectF(0, 0, width*ratioMultiplier, height*ratioMultiplier);
-        //canvas.drawBitmap(CommonStaticClass.getInstance().getmSuit(),frameToDraw,whereToDraw,null);
-        canvas.drawBitmap(sealBitmap,canvas.getWidth()-sealBitmap.getWidth(),canvas.getHeight()-sealBitmap.getHeight(),null);
+//        frameToDraw = new Rect(0, 0, width, height);
+//        whereToDraw = new RectF(0, 0, width*ratioMultiplier, height*ratioMultiplier);
+//        //canvas.drawBitmap(CommonStaticClass.getInstance().getmSuit(),frameToDraw,whereToDraw,null);
+//        canvas.drawBitmap(sealBitmap,canvas.getWidth()-sealBitmap.getWidth(),canvas.getHeight()-sealBitmap.getHeight(),null);
 
         if (mShowDebugInfo)
             drawMultitouchDebugMarks(canvas);
@@ -184,10 +191,29 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
     // ---------------------------------------------------------------------------------------------------
 
     /** Pass touch events to the MT controller */
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        return multiTouchController.onTouchEvent(event);
-//    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float x = event.getX();
+        float y = event.getY();
+        int n = mImages.size();
+        for (int i = n - 1; i >= 0; i--) {
+            Img im = mImages.get(i);
+            if (im.containsPoint(x, y))
+                return multiTouchController.onTouchEvent(event);
+        }
+        return false;
+    }
+
+
+    @Override
+    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
+        super.onSizeChanged(xNew, yNew, xOld, yOld);
+
+        screenWidth = xNew;
+        screenHeight = yNew;
+        getLocationOnScreen(location);
+//        Log.d("XYZ", "location = "+location[0]+", "+location[1]);
+    }
 
 
     /** Get the image that is under the single-touch point, or return null (canceling the drag op) if none */
@@ -298,16 +324,23 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
             this.width = drawable.getIntrinsicWidth();
             this.height = drawable.getIntrinsicHeight();
 
-            float wRatio = (float)displayWidth / (float)width;
-            float hRatio = (float)displayHeight / (float)height;
+//            float wRatio = (float)screenWidth / (float)width;
+//            float hRatio = (float)screenHeight / (float)height;
+//
+//            float ratioMultiplier = wRatio;
+//
+//            if (hRatio < wRatio) {
+//                ratioMultiplier = hRatio;
+//            }
 
-            float ratioMultiplier = wRatio;
-
-            if (hRatio < wRatio) {
-                ratioMultiplier = hRatio;
+//            Log.d("XYZ", "screenwidth="+screenWidth+" screenheight="+screenHeight);
+//            Log.d("XYZ", "centerX="+(location[0]+(width))+" centerY="+(location[1]+(height)));
+            if(firstLoad) {
+                firstLoad = false;
+                centerX = width;
+                centerY = height;
             }
-
-            setPos(displayWidth/2, displayHeight/3.5f, ratioMultiplier, ratioMultiplier, angle);
+            setPos(centerX, centerY, 2, 2, angle);
         }
 
         /** Called by activity's onPause() method to free memory used for loading the images */
@@ -330,9 +363,11 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
         private boolean setPos(float centerX, float centerY, float scaleX, float scaleY, float angle) {
             float ws = (width / 2) * scaleX, hs = (height / 2) * scaleY;
             float newMinX = centerX - ws, newMinY = centerY - hs, newMaxX = centerX + ws, newMaxY = centerY + hs;
-            if (newMinX > displayWidth - SCREEN_MARGIN || newMaxX < SCREEN_MARGIN || newMinY > displayHeight - SCREEN_MARGIN
-                    || newMaxY < SCREEN_MARGIN)
-                return false;
+//            if (newMinX > screenWidth - SCREEN_MARGIN || newMaxX < SCREEN_MARGIN || newMinY > screenHeight - SCREEN_MARGIN
+//                    || newMaxY < SCREEN_MARGIN) {
+//                Log.d("XYZ", "return false");
+//                return false;
+//            }
             this.centerX = centerX;
             this.centerY = centerY;
             this.scaleX = scaleX;
@@ -342,14 +377,18 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
             this.minY = newMinY;
             this.maxX = newMaxX;
             this.maxY = newMaxY;
+//            Log.d("XYZ", "return true");
+//            Log.d("XYZ", "centerX="+centerX+" centerY="+centerY+" scaleX="+scaleX+" scaleY="+scaleY);
+//            Log.d("XYZ", "minx="+minX+" miny="+minY+" maxx="+maxX+" maxy="+maxY);
             return true;
         }
 
         /** Return whether or not the given screen coords are inside this image */
         public boolean containsPoint(float scrnX, float scrnY) {
             // FIXME: need to correctly account for image rotation
-            //return (scrnX >= minX && scrnX <= maxX && scrnY >= minY && scrnY <= maxY);
-            return true;
+//            Log.d("XYZ", "scrX="+scrnX+" scrY="+scrnY+" minX="+minX+" maxX="+maxX+" minY="+minY+" maxY="+maxY);
+            return (scrnX >= minX && scrnX <= maxX && scrnY >= minY && scrnY <= maxY);
+//            return true;
         }
 
         public void draw(Canvas canvas) {

@@ -1,6 +1,8 @@
 package com.liilab.textimage;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -9,6 +11,8 @@ import android.widget.ImageView;
 
 import com.appsngames.textimage.R;
 import com.liilab.textimage.views.ImageEditText;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         mImageEditText = findViewById(R.id.mImageEditText);
         mImageEditText.setBackground(getResources().getDrawable(R.drawable.bg0));
+        mImageEditText.addImg(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.st0));
 
         mImageEditText.setDrawingCacheEnabled(true);
         imageView = findViewById(R.id.imageView);
@@ -56,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        mImageEditText.loadImages(this);
+        mImageEditText.loadImages(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        mImageEditText.unloadImages();
+        mImageEditText.unloadImages();
     }
 }
