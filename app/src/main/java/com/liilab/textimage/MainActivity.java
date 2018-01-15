@@ -1,6 +1,7 @@
 package com.liilab.textimage;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +18,9 @@ import static java.security.AccessController.getContext;
 public class MainActivity extends AppCompatActivity {
 
     private ImageEditText mImageEditText;
-    private ImageView imageView;
-    private Bitmap mBitmap;
+//    private ImageView imageView;
+//    private Bitmap mBitmap;
+    private Intent previewIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
         mImageEditText.addImg(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.st0));
 
         mImageEditText.setDrawingCacheEnabled(true);
-        imageView = findViewById(R.id.imageView);
+//        imageView = findViewById(R.id.imageView);
+
+        previewIntent = new Intent(this, PreviewActivity.class);
     }
 
     public void onClickCopy(View view) {
@@ -44,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
         mImageEditText.setCursorVisible(false);
 
         /* Get bitmap from EditText */
-        mBitmap = Bitmap.createBitmap(mImageEditText.getDrawingCache());
-        imageView.setImageBitmap(mBitmap);
+        CommonStaticClass.getInstance().setmBitmap(Bitmap.createBitmap(mImageEditText.getDrawingCache()));
+//        mBitmap = Bitmap.createBitmap(mImageEditText.getDrawingCache());
+//        imageView.setImageBitmap(mBitmap);
 
         /* Destroy current Drawing Cache */
         mImageEditText.destroyDrawingCache();
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         );
         /* Bring back Cursor */
         mImageEditText.setCursorVisible(true);
+
+        startActivity(previewIntent);
     }
 
     @Override

@@ -339,8 +339,10 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
                 firstLoad = false;
                 centerX = width;
                 centerY = height;
+                scaleX = 2;
+                scaleY = 2;
             }
-            setPos(centerX, centerY, 2, 2, angle);
+            setPos(centerX, centerY, scaleX, scaleY, angle);
         }
 
         /** Called by activity's onPause() method to free memory used for loading the images */
