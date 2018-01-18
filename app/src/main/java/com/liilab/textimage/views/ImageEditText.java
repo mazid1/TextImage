@@ -42,7 +42,7 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
     // -------------------------------------------------------------------------------------------------
 
     private MultiTouchController.PointInfo currTouchPoint = new MultiTouchController.PointInfo();
-    private boolean mShowDebugInfo = true;
+    private boolean mShowDebugInfo = false;
     private static final int UI_MODE_ROTATE = 1, UI_MODE_ANISOTROPIC_SCALE = 2;
     private int mUIMode = UI_MODE_ROTATE;
 
@@ -201,7 +201,7 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
             if (im.containsPoint(x, y))
                 return multiTouchController.onTouchEvent(event);
         }
-        return false;
+        return super.onTouchEvent(event);
     }
 
 
