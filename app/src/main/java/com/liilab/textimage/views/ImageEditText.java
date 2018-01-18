@@ -105,7 +105,7 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
         setBackgroundColor(Color.TRANSPARENT);
 
         displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager()
+        ((Activity) context).getWindowManager()
                 .getDefaultDisplay()
                 .getMetrics(displayMetrics);
         if(comboBitmap != null) comboBitmap.recycle();
@@ -197,8 +197,8 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
         float y = event.getY();
         int n = mImages.size();
         for (int i = n - 1; i >= 0; i--) {
-            Img im = mImages.get(i);
-            if (im.containsPoint(x, y))
+            //Img im = mImages.get(i);
+            if (mImages.get(i).containsPoint(x, y))
                 return multiTouchController.onTouchEvent(event);
         }
         return super.onTouchEvent(event);
