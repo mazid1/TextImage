@@ -337,10 +337,10 @@ public class ImageEditText extends android.support.v7.widget.AppCompatEditText
 //            Log.d("XYZ", "centerX="+(location[0]+(width))+" centerY="+(location[1]+(height)));
             if(firstLoad) {
                 firstLoad = false;
-                centerX = width;
-                centerY = height;
-                scaleX = 2;
-                scaleY = 2;
+                centerX = width/1.5f;
+                centerY = height/1.5f;
+                scaleX = 1;
+                scaleY = 1;
             }
             setPos(centerX, centerY, scaleX, scaleY, angle);
         }

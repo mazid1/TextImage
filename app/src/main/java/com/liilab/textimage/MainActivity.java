@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mImageEditText = findViewById(R.id.mImageEditText);
         mImageEditText.setBackground(getResources().getDrawable(R.drawable.bg0));
-        mImageEditText.addImg(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.st0));
+//        mImageEditText.addImg(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.st0));
 
         mImageEditText.setDrawingCacheEnabled(true);
 //        imageView = findViewById(R.id.imageView);
@@ -128,6 +129,13 @@ public class MainActivity extends AppCompatActivity {
     private void loadAction(View v) {
         myPopupView = v;
         ((GridView)(myPopupView.findViewById(R.id.stickerGrids))).setAdapter(mStickerAdapter);
+        ((GridView)(myPopupView.findViewById(R.id.stickerGrids))).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                mImageEditText.addImg(getResources(), BitmapFactory.decodeResource(getResources(), ids.get(position)));
+                mImageEditText.loadImages(getApplicationContext());
+                mImageEditText.invalidate();
+            }
+        });
         pw.setContentView(myPopupView);
     }
 
@@ -162,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mImageEditText.loadImages(this);
+        mImageEditText.loadImages(getApplicationContext());
     }
 
     @Override
