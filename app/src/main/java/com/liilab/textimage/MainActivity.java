@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -56,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
         previewIntent = new Intent(this, PreviewActivity.class);
         loadStickerIds();
         mStickerAdapter = new StickerAdapter(getApplicationContext(), ids);
-        mStickerAdapter.setHeight(66, 8);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        mStickerAdapter.setHeight((int)Math.floor((184/3)*dm.density), (int)Math.floor(8 * dm.density));
         loadAllQuickAction();
     }
 
