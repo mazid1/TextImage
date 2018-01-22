@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -41,13 +42,21 @@ public class MainActivity extends AppCompatActivity {
     private StickerAdapter mStickerAdapter;
     private ArrayList<Integer> ids;
 
+    private ConstraintLayout.LayoutParams mParams;
+    private  DisplayMetrics dm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dm = new DisplayMetrics();
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mImageEditText = findViewById(R.id.mImageEditText);
+
+//        mImageEditText.setWidth(dm.widthPixels);
+//        mImageEditText.setHeight(getResources().getDrawable(R.drawable.bg0).getIntrinsicHeight() * (dm.widthPixels/getResources().getDrawable(R.drawable.bg0).getIntrinsicWidth()));
+
         mImageEditText.setBackground(getResources().getDrawable(R.drawable.bg0));
 //        mImageEditText.addImg(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.st0));
 
@@ -57,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         previewIntent = new Intent(this, PreviewActivity.class);
         loadStickerIds();
         mStickerAdapter = new StickerAdapter(getApplicationContext(), ids);
-        DisplayMetrics dm = new DisplayMetrics();
+
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         mStickerAdapter.setHeight((int)Math.floor((184/3)*dm.density), (int)Math.floor(8 * dm.density));
@@ -174,6 +183,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mParams = (ConstraintLayout.LayoutParams) mImageEditText.getLayoutParams();
+        mParams.width = dm.widthPixels;
+        mParams.height = (int) ((float)getResources().getDrawable(R.drawable.bg0).getIntrinsicHeight()
+                * ((float)dm.widthPixels / (float)getResources().getDrawable(R.drawable.bg0).getIntrinsicWidth()));
+        mImageEditText.setLayoutParams(mParams);
+        mImageEditText.postInvalidate();
         mImageEditText.loadImages(getApplicationContext());
     }
 
