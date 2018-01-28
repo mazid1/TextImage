@@ -3,14 +3,19 @@ package com.liilab.textimage;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,9 +25,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.appsngames.textimage.R;
 import com.liilab.textimage.adapter.StickerAdapter;
+import com.liilab.textimage.backgroundtasks.SaveImageTask;
 import com.liilab.textimage.views.ImageEditText;
 
 import java.util.ArrayList;
@@ -45,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout.LayoutParams mParams;
     private  DisplayMetrics dm;
 
+    private ProgressBar mProgressBar;
+    private SaveImageTask mSaveImageTask;
+
+    private static final String TAG = "MAIN";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         dm = new DisplayMetrics();
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mImageEditText = findViewById(R.id.mImageEditText);
+
+        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mSaveImageTask = new SaveImageTask(this, mProgressBar);
+//        mSaveImageTask.setProgressBar(mProgressBar);
 
 //        mImageEditText.setWidth(dm.widthPixels);
 //        mImageEditText.setHeight(getResources().getDrawable(R.drawable.bg0).getIntrinsicHeight() * (dm.widthPixels/getResources().getDrawable(R.drawable.bg0).getIntrinsicWidth()));
@@ -150,6 +168,231 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         pw.setContentView(myPopupView);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+
+            case CommonStaticClass.REQUEST_FB: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+//                    if(filePath == null) {
+//                        //storeImage(((PixelGridView)GamePlayScreen.getGestureView().getChildAt(0)).getmBitmap());
+//                        makeVideo(CommonStaticClass.REQUEST_FB);
+//                    }
+//                    else {
+//                        Uri imgUri;
+//                        imgUri = Uri.parse(filePath);
+//
+//                        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+//                        shareIntent.setType(getString(R.string.video_type));
+//                        shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+//                        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_link) + getPackageName());
+//
+//                        if (!filterByPackageName(this, shareIntent, getString(R.string.fb_package))) {
+//                            String sharerUrl = getString(R.string.fb_sharer_url) + getPackageName();
+//                            shareIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sharerUrl));
+//                        }
+//
+//                        startActivity(shareIntent);
+//                    }
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_FB);
+
+                }
+                else {
+                    Toast.makeText(this, getString(R.string.file_perm_txt),Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                break;
+            }
+
+            case CommonStaticClass.REQUEST_GPLUS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+//                    if(filePath == null) {
+//                        //storeImage(((PixelGridView)GamePlayScreen.getGestureView().getChildAt(0)).getmBitmap());
+//                        makeVideo(CommonStaticClass.REQUEST_GPLUS);
+//                    }
+//                    else {
+//                        Uri imgUri;
+//                        imgUri = Uri.parse(filePath);
+//
+//                        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+//                        shareIntent.setType(getString(R.string.video_type));
+//                        shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+//                        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_link) + getPackageName());
+//
+//                        if (filterByPackageName(this, shareIntent, getString(R.string.gplus_package))) {
+//                            startActivity(shareIntent);
+//                        } else {
+//                            Toast.makeText(this, getString(R.string.gplus_not_found), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_GPLUS);
+                }
+                else {
+                    Toast.makeText(this, getString(R.string.file_perm_txt),Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                break;
+            }
+
+            case CommonStaticClass.REQUEST_SHARE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+//                    if(filePath == null) {
+//                        //storeImage(((PixelGridView)GamePlayScreen.getGestureView().getChildAt(0)).getmBitmap());
+//                        makeVideo(CommonStaticClass.REQUEST_SHARE);
+//                    } else {
+//                        Uri imgUri;
+//                        imgUri = Uri.parse(filePath);
+//
+//                        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+//                        shareIntent.setType(getString(R.string.video_type));
+//                        shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+//                        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_link) + getPackageName());
+//                        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)));
+//                    }
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_SHARE);
+                } else {
+                    Toast.makeText(this, getString(R.string.file_perm_txt),Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                break;
+            }
+
+            case CommonStaticClass.REQUEST_SAVE_IMAGE: {
+                //makeVideo(CommonStaticClass.REQUEST_SAVE_IMAGE);
+                mSaveImageTask.execute(CommonStaticClass.REQUEST_SAVE_IMAGE);
+                break;
+            }
+        }
+    }
+
+    public void onClickShare(View view) {
+        /* Remove Underline from incorrect words */
+        mImageEditText.setInputType(
+                InputType.TYPE_CLASS_TEXT
+                        | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                        | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        );
+        /* Hide Cursor */
+        mImageEditText.setCursorVisible(false);
+
+        /* Get bitmap from EditText */
+        CommonStaticClass.getInstance().setmBitmap(Bitmap.createBitmap(mImageEditText.getDrawingCache()));
+
+        /* Destroy current Drawing Cache */
+        mImageEditText.destroyDrawingCache();
+
+        /* Bring back Underline of incorrect words */
+        mImageEditText.setInputType(
+                InputType.TYPE_CLASS_TEXT
+                        | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        );
+        /* Bring back Cursor */
+        mImageEditText.setCursorVisible(true);
+
+        mSaveImageTask = new SaveImageTask(this, mProgressBar);
+
+        switch (view.getId()) {
+            case R.id.gplusButton:
+                if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        Log.d(TAG, "WES shouldShowRequest");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_GPLUS);
+                    } else {
+                        // No explanation needed, we can request the permission.
+                        Log.d(TAG, "WES no explanation need");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_GPLUS);
+                    }
+                } else {
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_GPLUS);
+                }
+                break;
+
+            case R.id.twitterButton:
+                if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        Log.d(TAG, "WES shouldShowRequest");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_TWITTER);
+                    } else {
+                        // No explanation needed, we can request the permission.
+                        Log.d(TAG, "WES no explanation need");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_TWITTER);
+                    }
+                } else {
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_TWITTER);
+                }
+                break;
+
+            case R.id.facebookButton:
+                if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        Log.d(TAG, "WES shouldShowRequest");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_FB);
+                    } else {
+                        // No explanation needed, we can request the permission.
+                        Log.d(TAG, "WES no explanation need");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_FB);
+                    }
+                } else {
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_FB);
+                }
+                break;
+
+            case R.id.shareButton:
+                if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        Log.d(TAG, "WES shouldShowRequest");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_SHARE);
+                    } else {
+                        // No explanation needed, we can request the permission.
+                        Log.d(TAG, "WES no explanation need");
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                CommonStaticClass.REQUEST_SHARE);
+                    }
+                } else {
+                    mSaveImageTask.execute(CommonStaticClass.REQUEST_SHARE);
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void onClickCopy(View view) {

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TextImage</string>
+    <string name="app_short_name">TI</string>
+    <string name="wait_message">Please wait, your status is saving.</string>
 </resources>

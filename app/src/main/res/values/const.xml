@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="myBucket"><b>BUCKET</b></string>
+    <string name="instaText">Insta</string>
+    <string name="cameraText"><b>CAMERA</b></string>
+    <string name="galleryText"><b>GALLERY</b></string>
+    <string name="twt_not_found">Twitter app isn\&apos;t found</string>
+    <string name="gplus_not_found">Google+ app isn\&apos;t found</string>
+    <string name="insta_not_found">Instagram app isn\&apos;t found</string>
+    <string name="pinterest_not_found">Pinterest app isn\&apos;t found</string>
+    <string name="share_via">Share via</string>
+
+    <string name="text_plain_type">text/plain</string>
+    <string name="image_type">image/*</string>
+    <string name="video_type">video/*</string>
+
+    <string name="app_link">http://play.google.com/store/apps/details?id=</string>
+    <string name="fb_package">com.facebook.katana</string>
+    <string name="fb_sharer_url">https://www.facebook.com/sharer/sharer.php?u=</string>
+    <string name="gplus_package">com.google.android.apps.plus</string>
+    <string name="twt_package">com.twitter.android</string>
+    <string name="pinterest_package">com.pinterest</string>
+    <string name="pinterest_share_url">https://www.pinterest.com/pin/create/button/?url=%s\&amp;media=%s\&amp;description=%s</string>
+    <string name="insta_package">com.instagram.android</string>
+    <string name="instaTagLink">http://instagram.com/explore/tags/</string>
+    <string name="instaHashTag">chocoholic</string>
+
+    <string name="time_stamp">yyyyMMdd_HHmmss</string>
+    <string name="save_msg">Image is saved in SD card</string>
+
+    <string name="yes_txt">Yes</string>
+    <string name="no_txt">No</string>
+    <string name="ok_txt">Ok</string>
+
+    <string name="cancel_txt">Cancel</string>
+
+    <string name="see_ad_txt">See Video Ad</string>
+
+    <string name="unlock_txt_1">Unlock this suit?</string>
+    <string name="unlock_txt_2">You can unlock this suit by watching a small Video Ad</string>
+
+    <string name="delete_txt_1">Confirmation request</string>
+    <string name="delete_txt_2">Do you really want to delete this image?</string>
+
+    <string name="reset_txt_1">Confirmation request</string>
+    <string name="reset_txt_2">Reset function will remove your current erasing activities in this page. Do you really want to reset?</string>
+
+    <string name="screen_1_tut_1">Select \&apos;START\&apos; to enter into the app.</string>
+    <string name="screen_2_tut_1">Select the suit &amp; pick an image from \&apos;Camera\&apos; or \&apos;Gallery\&apos;.</string>
+
+    <string name="screen_3_tut_1">Press crop to enable freehand crop mode.</string>
+    <string name="screen_3_tut_2">Touch and crop the image as you wish.</string>
+    <string name="screen_3_tut_3">Press ok after cropping.</string>
+
+    <string name="screen_4_tut_1">Press erase button to enable erase mode.</string>
+    <string name="screen_4_tut_2">Touch and erase the image as you wish.</string>
+    <string name="screen_4_tut_3">Press ok after you are done.</string>
+
+
+    <string name="file_perm_txt">This app needs all the required permission to work properly.</string>
+
+    <string name="not_pick_img">You haven\&apos;t picked Image</string>
+    <string name="wrong_msg">Something went wrong</string>
+
+    <string name="crop_txt">Crop</string>
+    <string name="crop_active">Crop mode activated</string>
+    <string name="move_active">Move mode activated</string>
+
+    <string name="select_files">SELECT_FILES</string>
+
+</resources>
